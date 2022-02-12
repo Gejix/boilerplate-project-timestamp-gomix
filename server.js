@@ -19,15 +19,9 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
-
-// your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
-});
-
-app.get("/api", (req,res)=>{
+app.get('/api', (req,res) =>{
   let date = new Date();
-
+  
   let result = {
     unix: date.getTime(),
     utc: date.toUTCString()
@@ -36,7 +30,8 @@ app.get("/api", (req,res)=>{
   res.send(result);
 });
 
-app.get("/api/:date",(req,res) => {
+app.get('/api/:date',(req,res) => {
+
   //Handling data parameters with invalid format
 
   if(!Date.parse(req.params.date) && !Number(req.params.date))
@@ -45,31 +40,38 @@ app.get("/api/:date",(req,res) => {
   }
 
 
-//Checking for conditions when date parameter is given in microseconds.
+  //Checking for conditions when date parameter is given in microseconds.
 
-else if (!(/[-]/.test(req.params.date)) && Number(req.params.date))
-{
-  let date = new Date(Number(req.params.date));
+  else if(!(/[-]/.test(req.params.date)) && Number(req.params.date))
+  {
+    let date = new Date(Number(req.params.date));
 
-  return res.send({
+    return res.send({
+      unix: date.getTime(),
+      utc: date.toUTCString()
+    });
+  } 
+
+  //For handling regular test cases when date parameter is in a valid date format.
+
+  let date = new Date(req.params.date);
+
+  let result = {
     unix: date.getTime(),
     utc: date.toUTCString()
-  });
-}
+  }
 
-//For handling regular test cases when date parameter is in a valid date format.
+  res.status(200).send(result);
+});
 
-let date = new Date(req.params.date);
+// your first API endpoint... 
+// app.get("/api/hello", function (req, res) {
+//   res.json({greeting: 'hello API'});
+// });
 
-let result = {
-  inix: date.getTime(),
-  utc: date.toUTCString()
-}
 
-res.status(200).send(result);
-})
 
 // listen for requests :)
-var listener = app.listen(process.env.PORT, function () {
-  console.log('Your app is listening on port ' + listener.address().port);
-});
+var listener = app.listen(port, function () {
+  console.log('Your app is listening on port ' + port);
+})
